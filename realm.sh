@@ -4,7 +4,7 @@
 
 set -Eeuo pipefail
 
-VERSION="0.1.2"
+VERSION="0.1.3"
 REPO_RAW="https://raw.githubusercontent.com/shuijiao1/realm-manager/main"
 UPDATE_URL="$REPO_RAW/realm.sh"
 VERSION_URL="$REPO_RAW/version.txt"
@@ -15,8 +15,6 @@ CONFIG_FILE="$REALM_DIR/config.toml"
 SERVICE_FILE="/etc/systemd/system/realm.service"
 LOG_FILE="/var/log/realm-manager.log"
 CRON_FILE="/etc/cron.d/realm-manager"
-OLD_REALM_DIR="/opt/realm"
-OLD_CONFIG_FILE="$OLD_REALM_DIR/config.toml"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -67,31 +65,7 @@ ensure_deps() {
   fi
   mkdir -p "$REALM_DIR"
   touch "$LOG_FILE" || true
-  migrate_legacy_realm
 }
-
-migrate_legacy_realm() {
-  # 之前版本使用 /opt/realm；现在统一使用 /root/realm。
-  # 迁移时只复制文件位置，不修改 config.toml 内容。
-  if [[ -f "$OLD_CONFIG_FILE" && ! -f "$CONFIG_FILE" ]]; then
-    info "发现旧 Realm 配置，迁移 $OLD_CONFIG_FILE -> $CONFIG_FILE"
-    install -m 0644 "$OLD_CONFIG_FILE" "$CONFIG_FILE"
-    log "migrated legacy config from $OLD_CONFIG_FILE to $CONFIG_FILE"
-  fi
-
-  if [[ -x "$OLD_REALM_DIR/realm" && ! -x "$REALM_BIN" ]]; then
-    info "发现旧 Realm 程序，迁移 $OLD_REALM_DIR/realm -> $REALM_BIN"
-    install -m 0755 "$OLD_REALM_DIR/realm" "$REALM_BIN"
-    log "migrated legacy binary from $OLD_REALM_DIR/realm to $REALM_BIN"
-  fi
-
-  if [[ -f "$SERVICE_FILE" ]] && grep -q '/root/realm' "$SERVICE_FILE"; then
-    warn "发现旧 realm.service 路径，已改为 /root/realm；配置内容保持不变"
-    write_service
-    log "rewrote legacy realm.service to use $REALM_DIR"
-  fi
-}
-
 arch_asset() {
   local arch
   arch="$(uname -m)"
@@ -350,39 +324,46 @@ menu() {
   ensure_deps
   while true; do
     clear || true
-    say "${YELLOW}▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂${NC}"
-    say "              ${CYAN}Realm 转发管理脚本 v$VERSION${NC}"
-    say "              ${BLUE}仓库: github.com/shuijiao1/realm-manager${NC}"
-    say "${YELLOW}▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂${NC}"
-    say "状态：$(status_line)"
-    say "配置：$CONFIG_FILE"
+    say "${CYAN}============================================${NC}"
+    say "          ${CYAN}Realm 转发管理脚本 v$VERSION${NC}"
+    say "${CYAN}============================================${NC}"
+    say "${GREEN}仓库: github.com/shuijiao1/realm-manager${NC}"
+    say "${GREEN}作者: shuijiao1${NC}"
+    say "${CYAN}============================================${NC}"
+    say "${YELLOW}服务状态：$(status_line)${NC}"
+    say "${YELLOW}配置文件：$CONFIG_FILE${NC}"
     say ""
-    say "1) 安装/更新 Realm"
-    say "2) 添加转发规则"
-    say "3) 查看转发规则"
-    say "4) 删除转发规则"
-    say "5) 启动服务"
-    say "6) 停止服务"
-    say "7) 重启服务"
-    say "8) 查看服务状态"
-    say "9) 定时重启管理"
-    say "10) 检查脚本更新"
-    say "11) 卸载 Realm"
-    say "0) 退出"
+    say "${YELLOW}=== 基础功能 ===${NC}"
+    say "${GREEN}1.${NC} 安装/更新 Realm"
+    say "${GREEN}2.${NC} 卸载 Realm"
+    say "${GREEN}3.${NC} 添加转发规则"
+    say "${GREEN}4.${NC} 查看转发规则"
+    say "${GREEN}5.${NC} 删除转发规则"
     say ""
-    read -rp "请选择: " choice
+    say "${YELLOW}=== 服务管理 ===${NC}"
+    say "${GREEN}6.${NC} 启动服务"
+    say "${GREEN}7.${NC} 停止服务"
+    say "${GREEN}8.${NC} 重启服务"
+    say "${GREEN}9.${NC} 查看服务状态"
+    say ""
+    say "${YELLOW}=== 系统功能 ===${NC}"
+    say "${GREEN}10.${NC} 定时重启管理"
+    say "${GREEN}11.${NC} 检查脚本更新"
+    say "${GREEN}0.${NC} 退出脚本"
+    say "${CYAN}============================================${NC}"
+    read -rp "请输入选项 [0-11]: " choice
     case "$choice" in
       1) install_realm ;;
-      2) add_rule ;;
-      3) list_rules ;;
-      4) delete_rule ;;
-      5) service_ctl start ;;
-      6) service_ctl stop ;;
-      7) service_ctl restart ;;
-      8) service_ctl status ;;
-      9) manage_cron ;;
-      10) check_update ;;
-      11) uninstall_realm ;;
+      2) uninstall_realm ;;
+      3) add_rule ;;
+      4) list_rules ;;
+      5) delete_rule ;;
+      6) service_ctl start ;;
+      7) service_ctl stop ;;
+      8) service_ctl restart ;;
+      9) service_ctl status ;;
+      10) manage_cron ;;
+      11) check_update ;;
       0) exit 0 ;;
       *) err "无效选项" ;;
     esac
