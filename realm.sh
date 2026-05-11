@@ -18,7 +18,7 @@ CRON_FILE="/etc/cron.d/realm-manager"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
+YELLOW='\033[0;35m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m'
@@ -313,11 +313,14 @@ check_update() {
   exit 0
 }
 
-status_line() {
-  if [[ -x "$REALM_BIN" ]]; then printf '已安装'; else printf '未安装'; fi
-  printf ' / '
-  if systemctl is-active --quiet realm.service 2>/dev/null; then printf '运行中'; else printf '未运行'; fi
+install_status() {
+  if [[ -x "$REALM_BIN" && -f "$SERVICE_FILE" ]]; then printf "${GREEN}已安装${NC}"; else printf "${RED}未安装${NC}"; fi
 }
+
+run_status() {
+  if systemctl is-active --quiet realm.service 2>/dev/null; then printf "${GREEN}运行中${NC}"; else printf "${RED}未运行${NC}"; fi
+}
+
 
 menu() {
   need_root
@@ -330,23 +333,24 @@ menu() {
     say "${GREEN}仓库: github.com/shuijiao1/realm-manager${NC}"
     say "${GREEN}作者: shuijiao1${NC}"
     say "${CYAN}============================================${NC}"
-    say "${YELLOW}服务状态：$(status_line)${NC}"
-    say "${YELLOW}配置文件：$CONFIG_FILE${NC}"
+    say "安装状态：$(install_status)"
+    say "运行状态：$(run_status)"
+    say "配置文件：${CYAN}$CONFIG_FILE${NC}"
     say ""
-    say "${YELLOW}=== 基础功能 ===${NC}"
+    say "${BLUE}=== 基础功能 ===${NC}"
     say "${GREEN}1.${NC} 安装/更新 Realm"
     say "${GREEN}2.${NC} 卸载 Realm"
     say "${GREEN}3.${NC} 添加转发规则"
     say "${GREEN}4.${NC} 查看转发规则"
     say "${GREEN}5.${NC} 删除转发规则"
     say ""
-    say "${YELLOW}=== 服务管理 ===${NC}"
+    say "${BLUE}=== 服务管理 ===${NC}"
     say "${GREEN}6.${NC} 启动服务"
     say "${GREEN}7.${NC} 停止服务"
     say "${GREEN}8.${NC} 重启服务"
     say "${GREEN}9.${NC} 查看服务状态"
     say ""
-    say "${YELLOW}=== 系统功能 ===${NC}"
+    say "${BLUE}=== 系统功能 ===${NC}"
     say "${GREEN}10.${NC} 定时重启管理"
     say "${GREEN}11.${NC} 检查脚本更新"
     say "${GREEN}0.${NC} 退出脚本"
