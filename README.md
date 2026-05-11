@@ -1,6 +1,6 @@
 # Realm-Manager
 
-水饺自用 Realm 转发管理脚本。
+Realm 转发管理脚本。
 
 ## 一键运行
 
