@@ -5,7 +5,7 @@
 ## 一键运行
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/shuijiao1/realm-manager/main/realm.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/shuijiao1/Realm-Manager/main/realm.sh)
 ```
 
 ## 快捷命令

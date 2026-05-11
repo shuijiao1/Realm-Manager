@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Realm Manager for ShuiJiao
-# Repo: https://github.com/shuijiao1/realm-manager
+# Repo: https://github.com/shuijiao1/Realm-Manager
 
 set -Eeuo pipefail
 
 VERSION="0.1.3"
-REPO_RAW="https://raw.githubusercontent.com/shuijiao1/realm-manager/main"
+REPO_RAW="https://raw.githubusercontent.com/shuijiao1/Realm-Manager/main"
 UPDATE_URL="$REPO_RAW/realm.sh"
 VERSION_URL="$REPO_RAW/version.txt"
 
@@ -330,7 +330,7 @@ menu() {
     say "${CYAN}============================================${NC}"
     say "          ${CYAN}Realm 转发管理脚本 v$VERSION${NC}"
     say "${CYAN}============================================${NC}"
-    say "${GREEN}仓库: github.com/shuijiao1/realm-manager${NC}"
+    say "${GREEN}仓库: github.com/shuijiao1/Realm-Manager${NC}"
     say "${GREEN}作者: shuijiao1${NC}"
     say "${CYAN}============================================${NC}"
     say "安装状态：$(install_status)"
