@@ -5,7 +5,7 @@
 ## 一键运行
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/shuijiao1/Realm-Manager/main/realm.sh)
+curl -L -s realm.shuijiao.de > /root/realm.sh && chmod +x /root/realm.sh && ./realm.sh
 ```
 
 ## 快捷命令
