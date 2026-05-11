@@ -4,7 +4,7 @@
 
 set -Eeuo pipefail
 
-VERSION="0.1.0"
+VERSION="0.1.1"
 REPO_RAW="https://raw.githubusercontent.com/shuijiao1/realm-manager/main"
 UPDATE_URL="$REPO_RAW/realm.sh"
 VERSION_URL="$REPO_RAW/version.txt"
@@ -15,6 +15,8 @@ CONFIG_FILE="$REALM_DIR/config.toml"
 SERVICE_FILE="/etc/systemd/system/realm.service"
 LOG_FILE="/var/log/realm-manager.log"
 CRON_FILE="/etc/cron.d/realm-manager"
+OLD_REALM_DIR="/root/realm"
+OLD_CONFIG_FILE="$OLD_REALM_DIR/config.toml"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -65,6 +67,29 @@ ensure_deps() {
   fi
   mkdir -p "$REALM_DIR"
   touch "$LOG_FILE" || true
+  migrate_legacy_realm
+}
+
+migrate_legacy_realm() {
+  # 旧脚本默认使用 /root/realm；新脚本统一使用 /opt/realm。
+  # 迁移时只移动/复制文件位置，不修改 config.toml 内容。
+  if [[ -f "$OLD_CONFIG_FILE" && ! -f "$CONFIG_FILE" ]]; then
+    info "发现旧 Realm 配置，迁移 $OLD_CONFIG_FILE -> $CONFIG_FILE"
+    install -m 0644 "$OLD_CONFIG_FILE" "$CONFIG_FILE"
+    log "migrated legacy config from $OLD_CONFIG_FILE to $CONFIG_FILE"
+  fi
+
+  if [[ -x "$OLD_REALM_DIR/realm" && ! -x "$REALM_BIN" ]]; then
+    info "发现旧 Realm 程序，迁移 $OLD_REALM_DIR/realm -> $REALM_BIN"
+    install -m 0755 "$OLD_REALM_DIR/realm" "$REALM_BIN"
+    log "migrated legacy binary from $OLD_REALM_DIR/realm to $REALM_BIN"
+  fi
+
+  if [[ -f "$SERVICE_FILE" ]] && grep -q '/root/realm' "$SERVICE_FILE"; then
+    warn "发现旧 realm.service 路径，已改为 /opt/realm；配置内容保持不变"
+    write_service
+    log "rewrote legacy realm.service to use $REALM_DIR"
+  fi
 }
 
 arch_asset() {
