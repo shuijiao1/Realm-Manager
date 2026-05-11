@@ -72,9 +72,7 @@ arch_asset() {
   arch="$(uname -m)"
   case "$arch" in
     x86_64|amd64) echo "realm-x86_64-unknown-linux-gnu.tar.gz" ;;
-    aarch64|arm64) echo "realm-aarch64-unknown-linux-gnu.tar.gz" ;;
-    armv7l) echo "realm-armv7-unknown-linux-gnueabihf.tar.gz" ;;
-    *) err "暂不支持架构：$arch"; exit 1 ;;
+    *) err "暂只支持 amd64/x86_64，当前架构：$arch"; exit 1 ;;
   esac
 }
 

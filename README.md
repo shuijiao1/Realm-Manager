@@ -30,7 +30,7 @@ bash realm.sh status        # 查看状态
 
 脚本参考常见 Realm 管理脚本的交互思路，重新整理实现：
 
-- 自动识别 `x86_64/aarch64/armv7l` 架构
+- 仅支持 `amd64/x86_64` 架构
 - 从 `zhboner/realm` GitHub Release 安装最新版
 - 支持添加、查看、按 ID 删除转发规则
 - 使用 systemd 管理服务
