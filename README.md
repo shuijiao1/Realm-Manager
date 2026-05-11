@@ -1,11 +1,11 @@
-# realm-manager
+# Realm-Manager
 
 水饺自用 Realm 转发管理脚本。
 
 ## 一键运行
 
 ```bash
-curl -L -s realm.shuijiao.de > /root/realm.sh && chmod +x /root/realm.sh && ./realm.sh
+bash <(curl -Ls https://realm.shuijiao.de)
 ```
 
 ## 快捷命令
