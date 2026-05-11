@@ -21,8 +21,8 @@ bash realm.sh status        # 查看状态
 
 ## 文件位置
 
-- Realm 安装目录：`/opt/realm`
-- 配置文件：`/opt/realm/config.toml`
+- Realm 安装目录：`/root/realm`
+- 配置文件：`/root/realm/config.toml`
 - systemd 服务：`realm.service`
 - 日志：`/var/log/realm-manager.log`
 
@@ -39,4 +39,4 @@ bash realm.sh status        # 查看状态
 
 ## 旧路径迁移
 
-如果机器上已有旧脚本安装的 `/root/realm/config.toml`，新脚本会自动迁移到 `/opt/realm/config.toml`，配置内容保持不变；旧二进制也会迁移到 `/opt/realm/realm`。
+如果机器上已有之前版本放在 `/opt/realm/config.toml` 的配置，新脚本会自动迁移回 `/root/realm/config.toml`，配置内容保持不变；旧二进制也会迁移到 `/root/realm/realm`。

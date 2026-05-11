@@ -4,18 +4,18 @@
 
 set -Eeuo pipefail
 
-VERSION="0.1.1"
+VERSION="0.1.2"
 REPO_RAW="https://raw.githubusercontent.com/shuijiao1/realm-manager/main"
 UPDATE_URL="$REPO_RAW/realm.sh"
 VERSION_URL="$REPO_RAW/version.txt"
 
-REALM_DIR="/opt/realm"
+REALM_DIR="/root/realm"
 REALM_BIN="$REALM_DIR/realm"
 CONFIG_FILE="$REALM_DIR/config.toml"
 SERVICE_FILE="/etc/systemd/system/realm.service"
 LOG_FILE="/var/log/realm-manager.log"
 CRON_FILE="/etc/cron.d/realm-manager"
-OLD_REALM_DIR="/root/realm"
+OLD_REALM_DIR="/opt/realm"
 OLD_CONFIG_FILE="$OLD_REALM_DIR/config.toml"
 
 RED='\033[0;31m'
@@ -71,8 +71,8 @@ ensure_deps() {
 }
 
 migrate_legacy_realm() {
-  # 旧脚本默认使用 /root/realm；新脚本统一使用 /opt/realm。
-  # 迁移时只移动/复制文件位置，不修改 config.toml 内容。
+  # 之前版本使用 /opt/realm；现在统一使用 /root/realm。
+  # 迁移时只复制文件位置，不修改 config.toml 内容。
   if [[ -f "$OLD_CONFIG_FILE" && ! -f "$CONFIG_FILE" ]]; then
     info "发现旧 Realm 配置，迁移 $OLD_CONFIG_FILE -> $CONFIG_FILE"
     install -m 0644 "$OLD_CONFIG_FILE" "$CONFIG_FILE"
@@ -86,7 +86,7 @@ migrate_legacy_realm() {
   fi
 
   if [[ -f "$SERVICE_FILE" ]] && grep -q '/root/realm' "$SERVICE_FILE"; then
-    warn "发现旧 realm.service 路径，已改为 /opt/realm；配置内容保持不变"
+    warn "发现旧 realm.service 路径，已改为 /root/realm；配置内容保持不变"
     write_service
     log "rewrote legacy realm.service to use $REALM_DIR"
   fi
@@ -223,7 +223,7 @@ add_rule() {
 
 [[endpoints]]
 # id: $id
-# remark: $remark
+# 备注: $remark
 listen = "$listen_addr"
 remote = "$remote_host:$remote_port"
 EOF_RULE
@@ -234,18 +234,23 @@ EOF_RULE
 
 list_rules() {
   write_default_config
+  printf '%b\n' "${BLUE}---------------------------------------------------------------------------------------------------------${NC}"
+  printf "%-6s | %-26s | %-34s | %s\n" "ID" "本地监听" "目标地址" "备注"
+  printf '%b\n' "${BLUE}---------------------------------------------------------------------------------------------------------${NC}"
   awk '
-    BEGIN { id=""; remark=""; listen=""; remote=""; found=0 }
-    /^\[\[endpoints\]\]/ { if (listen || remote) print_rule(); found=1; id=""; remark=""; listen=""; remote=""; next }
+    BEGIN { id=""; remark=""; listen=""; remote=""; found=0; auto_id=0 }
+    /^\[\[endpoints\]\]/ { if (listen || remote) print_rule(); found=1; id=""; remark=""; listen=""; remote=""; auto_id++; next }
     /^# id:/ { id=$3; next }
     /^# remark:/ { sub(/^# remark:[ ]*/, ""); remark=$0; next }
+    /^# 备注:/ { sub(/^# 备注:[ ]*/, ""); remark=$0; next }
+    /^#/ && remark == "" { sub(/^#[ ]*/, ""); remark=$0; next }
     /^listen[ ]*=/ { listen=$0; sub(/^[^\"]*\"/, "", listen); sub(/\".*/, "", listen); next }
     /^remote[ ]*=/ { remote=$0; sub(/^[^\"]*\"/, "", remote); sub(/\".*/, "", remote); next }
-    function print_rule() { printf "%-5s %-24s -> %-32s %s\n", (id?id:"?"), listen, remote, remark }
+    function print_rule() { printf "%-6s | %-26s | %-34s | %s\n", (id?id:auto_id), listen, remote, remark }
     END { if (listen || remote) print_rule(); if (!found) print "暂无转发规则" }
   ' "$CONFIG_FILE"
+  printf '%b\n' "${BLUE}---------------------------------------------------------------------------------------------------------${NC}"
 }
-
 delete_rule() {
   write_default_config
   say "当前规则："
@@ -345,7 +350,10 @@ menu() {
   ensure_deps
   while true; do
     clear || true
-    say "${CYAN}Realm 管理脚本 v$VERSION${NC}"
+    say "${YELLOW}▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂${NC}"
+    say "              ${CYAN}Realm 转发管理脚本 v$VERSION${NC}"
+    say "              ${BLUE}仓库: github.com/shuijiao1/realm-manager${NC}"
+    say "${YELLOW}▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂﹍▂${NC}"
     say "状态：$(status_line)"
     say "配置：$CONFIG_FILE"
     say ""
