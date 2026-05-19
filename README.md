@@ -1,38 +1,54 @@
 # Realm-Manager
 
-Realm 转发管理脚本。
+![Shell](https://img.shields.io/badge/Shell-Bash-4EAA25?style=flat-square&logo=gnu-bash&logoColor=white)
+![Version](https://img.shields.io/badge/version-v0.1.2-blue?style=flat-square)
 
-## 一键运行
+**中文** | [English](README.en.md)
+
+**Realm 转发管理脚本。**
+
+> 面向 Debian / Ubuntu root 环境，优先使用自己的短链一键运行。
+
+---
+
+## 🎯 核心特性
+
+- 安装 / 更新 Realm
+- 添加、查看、删除转发规则
+- systemd 服务管理
+- 支持 cron 每日重启
+
+---
+
+## 🚀 快速开始
 
 ```bash
 bash <(curl -Ls https://realm.shuijiao.de)
 ```
 
-## 快捷命令
+备用方式：
 
 ```bash
-bash realm.sh install       # 安装/更新 Realm
-bash realm.sh add           # 添加规则
-bash realm.sh list          # 查看规则
-bash realm.sh delete        # 删除规则
-bash realm.sh restart       # 重启服务
-bash realm.sh status        # 查看状态
+bash <(curl -Ls https://raw.githubusercontent.com/shuijiao1/Realm-Manager/main/realm.sh)
 ```
 
-## 文件位置
+---
 
-- Realm 安装目录：`/root/realm`
-- 配置文件：`/root/realm/config.toml`
-- systemd 服务：`realm.service`
-- 日志：`/var/log/realm-manager.log`
+## ⚙️ 版本与发布
 
-## 说明
+- 当前版本：`v0.1.2`
+- 更新记录见 [`CHANGELOG.md`](CHANGELOG.md)
+- GitHub Release 会根据 `CHANGELOG.md` 自动生成说明
+- 维护者发布新版本可使用：
 
-脚本参考常见 Realm 管理脚本的交互思路，重新整理实现：
+```bash
+./release.sh <version> "更新说明"
+```
 
-- 仅支持 `amd64/x86_64` 架构
-- 从 `zhboner/realm` GitHub Release 安装最新版
-- 支持添加、查看、按 ID 删除转发规则
-- 使用 systemd 管理服务
-- 支持 cron 每日重启
-- 支持脚本本体更新检查
+---
+
+## ⚠️ 注意事项
+
+- 请在可信 VPS 上以 root 执行。
+- 涉及防火墙、SSH、重装、转发规则等操作前，建议保留一个现有 SSH 会话不断开。
+- 脚本默认只维护公开通用配置，不内置私人密钥或私人密码。
