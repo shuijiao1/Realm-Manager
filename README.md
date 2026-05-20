@@ -26,12 +26,6 @@
 bash <(curl -Ls https://realm.shuijiao.de)
 ```
 
-备用方式：
-
-```bash
-bash <(curl -Ls https://raw.githubusercontent.com/shuijiao1/Realm-Manager/main/realm.sh)
-```
-
 ---
 
 ## ⚙️ 版本与发布

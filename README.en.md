@@ -26,12 +26,6 @@
 bash <(curl -Ls https://realm.shuijiao.de)
 ```
 
-Fallback:
-
-```bash
-bash <(curl -Ls https://raw.githubusercontent.com/shuijiao1/Realm-Manager/main/realm.sh)
-```
-
 ---
 
 ## ⚙️ Versioning and Releases
