@@ -28,17 +28,6 @@ bash <(curl -Ls https://realm.shuijiao.de)
 
 ---
 
-## ⚙️ Versioning and Releases
-
-- Current version: `v0.1.3`
-- Changelog: [`CHANGELOG.md`](CHANGELOG.md)
-- GitHub Releases are generated from `CHANGELOG.md`
-- Maintainers can publish a new version with:
-
-```bash
-./release.sh <version> "release notes"
-```
-
 ---
 
 ## ⚠️ Notes
