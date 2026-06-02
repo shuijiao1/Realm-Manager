@@ -1,7 +1,7 @@
 # Realm-Manager
 
 ![Shell](https://img.shields.io/badge/Shell-Bash-4EAA25?style=flat-square&logo=gnu-bash&logoColor=white)
-![Version](https://img.shields.io/badge/version-v0.1.4-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.1.5-blue?style=flat-square)
 
 **中文** | [English](README.en.md)
 
@@ -13,7 +13,7 @@
 
 ## 🎯 核心特性
 
-- 安装 / 更新 Realm
+- 安装 / 更新 Realm 核心
 - 添加、查看、删除转发规则
 - systemd 服务管理
 - 支持 cron 每日重启

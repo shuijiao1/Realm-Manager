@@ -4,7 +4,7 @@
 
 set -Eeuo pipefail
 
-VERSION="0.1.3"
+VERSION="0.1.5"
 REPO_RAW="https://raw.githubusercontent.com/shuijiao1/Realm-Manager/main"
 UPDATE_URL="$REPO_RAW/realm.sh"
 VERSION_URL="$REPO_RAW/version.txt"
@@ -138,7 +138,7 @@ install_realm() {
 	write_service
 	systemctl enable --now realm.service
 	log "installed realm v$ver"
-	ok "Realm 已安装/更新并启动"
+	ok "Realm 核心已安装/更新并启动"
 }
 
 validate_port() {
@@ -379,7 +379,7 @@ menu() {
 		say "配置文件：${CYAN}$CONFIG_FILE${NC}"
 		say ""
 		say "${BLUE}=== 基础功能 ===${NC}"
-		say "${GREEN}1.${NC} 安装/更新 Realm"
+		say "${GREEN}1.${NC} 安装/更新 Realm 核心"
 		say "${GREEN}2.${NC} 卸载 Realm"
 		say "${GREEN}3.${NC} 添加转发规则"
 		say "${GREEN}4.${NC} 查看转发规则"

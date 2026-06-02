@@ -1,7 +1,7 @@
 # Realm-Manager
 
 ![Shell](https://img.shields.io/badge/Shell-Bash-4EAA25?style=flat-square&logo=gnu-bash&logoColor=white)
-![Version](https://img.shields.io/badge/version-v0.1.4-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.1.5-blue?style=flat-square)
 
 [中文](README.md) | **English**
 
@@ -13,7 +13,7 @@
 
 ## 🎯 Features
 
-- Install / update Realm
+- Install / update the Realm core
 - Add, list and delete forwarding rules
 - systemd service management
 - Optional daily restart via cron
